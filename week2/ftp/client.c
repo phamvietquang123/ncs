@@ -9,7 +9,7 @@ int main(int argc, char const *argv[])
 		exit(-1);
 	}
 
-	struct sockaddr_in address;
+	//struct sockaddr_in address;
 	int client_sock;
 	struct sockaddr_in server_addr;
 	char buffer[MAX_LENGTH];
@@ -26,8 +26,10 @@ int main(int argc, char const *argv[])
 	if(inet_pton(AF_INET, IP, &server_addr.sin_addr)<=0) 
 		error("\nError: Invalid address. Address not supported. ");
 
-	if (connect(client_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
+	if (connect(client_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
 		error("\nError: Failed to connect to the remote host. ");
+		exit(-1);
+	}
 		recv(client_sock, buffer, MAX_LENGTH, 0);
 	while(1){
 		bzero(buffer, MAX_LENGTH);
@@ -61,35 +63,7 @@ int main(int argc, char const *argv[])
             	printf("Error sending file. Please try again\n");
             	break;
             }
-		} else if(strcmp("AUTH",cmd)==0) {
-			printf("Sending AUTH command to server...\n");
-
-    char auth_message[MAX_LENGTH];
-    // You might want to replace the following line with the actual user authentication data
-    // sprintf(auth_message, "AUTHENTICATE USER %s PASSWORD %s", username, password);
-    strcpy(auth_message, "AUTH");
-
-    int n = send(client_sock, auth_message, strlen(auth_message), 0);
-    if (n < 0) {
-        perror("Error sending AUTH command");
-        // Handle the error as needed
-    }
-
-    // You can also receive a response from the server after sending the AUTH command
-    char response[MAX_LENGTH];
-    int n1 = recv(client_sock, response, MAX_LENGTH, 0);
-    if (n1 < 0) {
-        perror("Error receiving response to AUTH command");
-        // Handle the error as needed
-    }
-
-    // You might want to print or process the server's response here
-    printf("Server response to AUTH command: %s\n", response);
-
-    // Optionally, you can wait for user input here or proceed with other client operations
-   // while (getchar() != '\n');
-		}
-		else if (strcmp("GET",cmd)==0)
+		} else if (strcmp("GET",cmd)==0)
 		{
 			// check if file exist
 			char *fname;
@@ -105,7 +79,6 @@ int main(int argc, char const *argv[])
 		}
 		else if (strcmp("MPUT",cmd)==0)
 		{
-			// send(client_sock, buffer, MAX_LENGTH, 0);
 			
 			char *fext, *fname;
 			cmd =  strtok(NULL," ");
@@ -140,7 +113,7 @@ int main(int argc, char const *argv[])
 		}
 		else if (strcmp("MGET",cmd)==0)
 		{
-			char *fext, *fname;
+			char *fext;
 			cmd =  strtok(NULL," ");
 			fext = cmd;
 			printf("Getting all %s files\n",fext );
@@ -302,7 +275,7 @@ int receive_file(int socket,char* fname){
         printf("Received the file from Server's Disk!\n\n");
         fclose(out_file); 
     }
-
+return 0;
 }
 
 void put_file(int client_sock,char* fname){
@@ -332,7 +305,6 @@ void put_file(int client_sock,char* fname){
 		{
 			bzero(buffer,MAX_LENGTH);
 			recv(client_sock, buffer, MAX_LENGTH, 0);
-			// printf("CLIENT response OKAy %s\n",buffer );
 			if (strcmp(buffer,"OKAY")==0)
 			{
 				send_file(client_sock, fname);
@@ -375,7 +347,6 @@ void get_file(int client_sock, char* fname){
 			{
 				
 				receive_file(client_sock, fname);
-				// printf("FIle can be received\n");
 
 			}
 			else{
@@ -398,6 +369,6 @@ void get_file(int client_sock, char* fname){
 		}
 	}
 	else{
-		printf("File %s not found.\n",fname);//Operation Aborted\n", fname);
+		printf("File %s not found.\n",fname);
 	}
 }

@@ -10,7 +10,7 @@
 
 #define MAX_LENGTH 512
 #define MAX_CONN 5
-#define DSK "../dsk_server/"
+#define DSK "./dsk_server/"
 
 void put_file(int socket,char* fname);
 void get_file(int socket, char* fname);

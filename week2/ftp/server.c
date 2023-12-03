@@ -2,9 +2,7 @@
 
 int main()
 {
-
-	// Basic Declarations for socket programming
-	int PORT = 22;
+	int PORT = 21;
 	int server_sock;
 	struct sockaddr_in my_addr;
     struct sockaddr_storage their_addr;
@@ -28,9 +26,7 @@ int main()
 	if (listen(server_sock, MAX_CONN)<0)
 		error("Unable to listen to the port");
 
-	// printf("fo\n");
-	
-	// Create a loop for accepting connections
+	//Create a loop for accepting connections
 	while(1){
 		int accept_sockfd;
 		int addr_len = sizeof(their_addr);
@@ -213,9 +209,8 @@ int receive_file(int socket,char* fname){
         printf("Received file from Client!\n\n");
         fclose(out_file); 
     }
-
+    return 0;
 }
-
 int send_file(int socket, char* fname){
     char buffer[MAX_LENGTH] = {0};
     char fpath[MAX_LENGTH];
