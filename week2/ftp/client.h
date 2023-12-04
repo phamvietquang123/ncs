@@ -10,7 +10,7 @@
 
 
 #define MAX_LENGTH 512
-#define DSK "./dsk_client/"
+#define DSK "~/week2/ftp/dsk_client/"
 
 int send_file(int socket, char* fname);
 int receive_file(int socket,char* fname);
