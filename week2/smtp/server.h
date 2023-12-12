@@ -9,7 +9,13 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <sys/select.h>
+#include <pthread.h>
 
 #define domain "server.smtp.com"
 
-int receive_image(int socket) {}
+#ifndef SERVER_H
+#define SERVER_H
+
+void *handle_connection(void *arg);
+
+#endif

@@ -20,7 +20,6 @@ char * Mail_Header(char *from,char *to,char *sub,char *content)
     sprintf(sender,"FROM: %s\r\n",from);
     sprintf(subject,"Subject: %s\r\n",sub);
     sprintf(recep,"TO: %s\r\n",to);
-    //extra \n is used to end the header part
 
     sprintf(content_a,"%s\r\n",content);
 
@@ -36,6 +35,8 @@ char * Mail_Header(char *from,char *to,char *sub,char *content)
     
     return header;
 }
+
+
 
 
 int main(int argc, char *argv[])
@@ -75,7 +76,17 @@ int main(int argc, char *argv[])
         exit(-1);
     }
        
-    //Implementing commands which are used b/w Client and SMTP Server for communication
+     int client_id;
+    printf("Enter your ID: ");
+    scanf("%d", &client_id);
+    getchar(); 
+    send(socket_id, (char*)&client_id, sizeof(client_id), 0);
+
+    char server_message[10240];
+    memset(server_message, 0, sizeof(server_message));
+    recv(socket_id, server_message, sizeof(server_message), 0);
+    printf("%s\n", server_message);
+
     while(1) {
         printf("Enter the command : ");
         bzero(cname, 256);
@@ -104,7 +115,6 @@ int main(int argc, char *argv[])
             }
             printf("SERVER : %s\n",buff);    //250 Hello domain
 
-            //checking error
             code[0] = buff[0];
             code[1] = buff[1];
             code[2] = buff[2];
@@ -134,16 +144,16 @@ int main(int argc, char *argv[])
             {
                 printf("\nError occured while writing to socket!\n");
             }
-            printf("\nCLIENT : %s",buff);  //MAIL FROM:<your email id>
+            printf("\nCLIENT : %s",buff);  
             bzero(buff,10240);
             n = recv(socket_id,buff,10239,0);
             if(n < 0)
             {
                 printf("\nError occured while recving from socket!\n");
             }
-            printf("SERVER : %s\n",buff);  //250 OK
+            printf("SERVER : %s\n",buff);  
 
-            //checking error
+           
             code[0] = buff[0];
             code[1] = buff[1];
             code[2] = buff[2];
@@ -173,15 +183,14 @@ int main(int argc, char *argv[])
             {
                 printf("\nError occured while writing to socket!\n");
             }
-            printf("\nCLIENT : %s",buff);  //RCPT TO:<your email id>
+            printf("\nCLIENT : %s",buff);  
             bzero(buff,10240);
             n = recv(socket_id,buff,10239,0);
             if(n < 0)
             {
                 printf("\nError occured while recving from socket!\n");
             }
-            printf("SERVER : %s\n",buff);  //250 OK
-
+            printf("SERVER : %s\n",buff);  
             //checking error
             code[0] = buff[0];
             code[1] = buff[1];
@@ -215,9 +224,8 @@ int main(int argc, char *argv[])
             {
                 printf("\nError occured while recving from socket!\n");
             }
-            printf("SERVER : %s\n",buff);  //354 Send message content; end with <CRLF>.<CRLF>
+            printf("SERVER : %s\n",buff); 
 
-            //checking error
             code[0] = buff[0];
             code[1] = buff[1];
             code[2] = buff[2];
@@ -231,7 +239,6 @@ int main(int argc, char *argv[])
                 printf("\nError occured!\n\n");
             }
 
-            //creating a mail header
             char sub[150];
             char content[450];
             printf("\nEnter Subject : ");
